@@ -1,0 +1,38 @@
+#
+# jinja map for antelope salt state
+#
+
+# Should be the same defaults no matter the os
+# change key to 'default' after v2014.1.0 match arch for now
+#
+# Can override from pillar for individual installs ('lookup').
+{% set antelope = salt['grains.filter_by']({
+    'x86_64' : {
+        'install' : '/opt/antelope',
+        'version' : '5.3',
+        'files': 'salt://antelope/files',
+        'source' : '/mnt',
+    },
+}, grain='cpuarch', merge=salt['pillar.get']('antelope:default')) %}
+
+# Dependencies
+# TODO: expand this
+#  - Future versions of salt will allow yum groupinstalls
+#  - add yum groups 'Base', 'Development Tools' and 'X Window System'
+#
+{% set depends = salt['grains.filter_by']({
+    'Debian' : {
+        'installer' : ['libjpeg62', 'libxft2'],
+        'programs' : ['xfs', 'xfstt', 't1-xfree86-nonfree',
+                     'ttf-xfree86-nonfree', 'ttf-xfree86-nonfree-syriac',
+                     'xfonts-75dpi', 'xfonts-100dpi'],
+        'services': ['xfs', 'xfstt'],
+        'groups' : [],
+        },
+    'RedHat' : {
+        'installer' : ['libjpeg', 'libxft'],
+        'programs' : ['hal'],
+        'services': ['haldaemon'],
+        'groups' : ['Base', 'Development tools', 'X Window System'],
+        },
+}) %}

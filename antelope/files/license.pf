@@ -1,0 +1,8 @@
+#
+# Antelope license.pf file
+# Managed by salt. Any changes to keys may be overwritten.
+#
+{% set license_keys = salt['pillar.get']('license_pf:keys', {}) -%}
+{% for key in license_keys[version|string] -%}
+{{ key }}
+{% endfor -%}
