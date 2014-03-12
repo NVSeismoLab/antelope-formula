@@ -280,3 +280,54 @@ def patch(tarball, dest=None, version=None):
         return ret
     return True
 
+
+def rtinit(directory, opts=[], version=VERSION, **kwargs):
+    """
+    Run rtinit in a directory
+    
+    directory : str passed to 'cwd' of where to run from
+    opts : iterable of str of options for 'rtinit'
+    version : str of Antelope version to use (optional)
+
+    **kwargs : all additional keywords passed to 'cmd.run'
+               (i.e. 'runas', etc)
+    """
+    ENV = _env(version)
+    exe = os.path.join(ENV,'bin','rtinit')
+    options = ' '.join(opts)
+    cmd = '{0} {1}'.format(exe, options)
+    out =  __salt__['cmd.run_all'](cmd, cwd=directory, env={'ANTELOPE': ENV}, **kwargs)
+    if out['retcode']:
+        return out['stderr']
+    return True
+
+
+def rtexec(directory, action=None, version=VERSION, **kwargs):
+    """
+    Run rtexec in a directory
+    
+    directory : str passed to 'cwd' of where to run from
+    opts : iterable of str of options for 'rtinit'
+    version : str of Antelope version to use (optional)
+
+    **kwargs : all additional keywords passed to 'cmd.run'
+               (i.e. 'runas', etc)
+    """
+    OPTS = [] # the -s option breaks remote exec somehow...
+    ENV = _env(version)
+    exe = os.path.join(ENV,'bin','rtexec')
+    options = ' '.join(OPTS)
+    
+    # Optionally, use keywords instead of options?
+    # This may go away:
+    if action == "restart":
+        options = '-f ' + options
+    elif action == "stop":
+        options = '-fk  Auto-killed by salt'
+
+    cmd = '{0} {1}'.format(exe, options)
+    out =  __salt__['cmd.run_all'](cmd, cwd=directory, env={'ANTELOPE': ENV}, **kwargs)
+    if out['retcode']:
+        return out['stderr']
+    return True
+
