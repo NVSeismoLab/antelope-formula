@@ -24,7 +24,7 @@ include:
 
 run_installer:
     module.run:
-        - func: antelope.install
+        - name: antelope.install
         - source: {{ antelope.source }}
         - version: {{ antelope.version }}
 
