@@ -7,27 +7,27 @@
 # The mailhost should be a machine running sendmail or some other 
 # mail relay agent, which will accept connections from this host.
 # An ip address is probably a good choice here.
-mailhost {% site_pf.mailhost %} # accessible ip address of machine running mail relay agent
+mailhost {{ site_pf.mailhost }} # accessible ip address of machine running mail relay agent
 
 #
 # The easiest choice for mail domain may be the domain of the mailhost.
-mail_domain {% site_pf.mail_domain %} # domain name for outgoing mail -- e.g., brtt.com
+mail_domain {{ site_pf.mail_domain }} # domain name for outgoing mail -- e.g., brtt.com
 
 #
 # miniseed contains a network code which should be officially assigned.
 # Put that code in here for default_seed_network (or use XX)
-default_seed_network {% site_pf.default_seed_network %} # used in miniseed headers
+default_seed_network {{ site_pf.default_seed_network }} # used in miniseed headers
 
 #
 # Seed volumes contain an originating_organization in the 010 blockette 
 # Fill in the long name of your organization or institution here.
-originating_organization {% site_pf.originating_organization %} # used in SEED volumes
+originating_organization {{ site_pf.originating_organization }} # used in SEED volumes
 
 #
 # dbloc2 uses Institution in the author field of the origin table.
 # Fill in a short abbreviation for your organization or institution.
 # Short code preferred as the auth field in the origin table combines
 #   $INSTITUTION:$USER and can be only 15 characters 
-Institution {% site_pf.institution %} # short code: part of author field in origin table, e.g., UCSD         
+Institution {{ site_pf.institution }} # short code: part of author field in origin table, e.g., UCSD         
 
 pf_revision_time 1273162000
