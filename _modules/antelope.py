@@ -10,6 +10,7 @@ import os
 import sys
 import re
 import logging
+import StringIO
 from salt.exceptions import CommandExecutionError
 
 # log for debugging, info
@@ -29,7 +30,7 @@ def _base_dir(install=INSTALL_ROOT):
 
 
 def _env(version=VERSION):
-    return os.path.join(_base_dir(), version)
+    return os.path.join(_base_dir(), str(version))
 
 
 def _run_installer(path, args=INSTALLER_ARGS):
@@ -80,13 +81,14 @@ class _AntelopeInstaller(object):
     with errors and logging.
     """
     logger = LOG  # mainly for debugging
+    logstream = StringIO.StringIO()   # save log to stream to return on error
     version = None
     source = None
     mount_point = os.path.join(os.sep, 'mnt')
     _mounted = False
     
     @classmethod
-    def log_to_stderr(cls, level='DEBUG'):
+    def log_to_stream(cls, level='DEBUG'):
         """
         Setup a logger.
         
@@ -101,7 +103,7 @@ class _AntelopeInstaller(object):
         """
         cls.logger.setLevel(logging.DEBUG)
         # create console handler and set level
-        ch = logging.StreamHandler() # default stream=sys.stderr
+        ch = logging.StreamHandler(cls.logstream) # default stream=sys.stderr
         lvl = getattr(logging, level.upper())
         ch.setLevel(lvl)
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -112,8 +114,7 @@ class _AntelopeInstaller(object):
         """
         Construct away
         """
-        if debug:
-            self.log_to_stderr()
+        self.log_to_stream()
         self.version = version
         if mount_point is not None:
             self.mount_point = mount_point
@@ -170,11 +171,13 @@ class _AntelopeInstaller(object):
         except Exception as e:
             self.logger.warn("Something went wrong")
             self.logger.exception(e)
-            return e.message
         finally:
             if self._mounted is True:
                 self.logger.info("Unmounting %s" % self.mount_point)
                 _unmount_iso(self.mount_point)
+            self.logstream.flush()
+            self.logstream.seek(0)
+            return self.logstream.read()
         return True
 
 ##############################################################################
