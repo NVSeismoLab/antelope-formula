@@ -13,7 +13,7 @@
         'files': 'salt://antelope/files',
         'source' : '/mnt',
     },
-}, grain='cpuarch', merge=salt['pillar.get']('antelope:default')) %}
+}, grain='cpuarch', merge=salt['pillar.get']('antelope:lookup')) %}
 
 # Dependencies
 # TODO: expand this

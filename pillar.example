@@ -16,7 +16,7 @@
 #   [in anteloe/files/license.pf]
 #
 antelope:
-    default:
+    lookup:
         install: '/opt/antelope'
         files: 'salt://antelope/files'
         source: '/mnt'
