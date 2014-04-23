@@ -11,6 +11,15 @@
         - sources:
             - {{ sitecustomize }}
 
+# md5 package in Antelope python hardcodes lib names, link em
+/usr/lib/x86_64-linux-gnu/libssl.so.10:
+    file.symlink:
+        - target: /lib/x86_64-linux-gnu/libssl.so.1.0.0
+
+/usr/lib/x86_64-linux-gnu/libcrypto.so.10:
+    file.symlink:
+        - target: /lib/x86_64-linux-gnu/libcrypto.so.1.0.0
+
 {% endif %}
 
 #
