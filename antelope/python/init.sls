@@ -28,12 +28,12 @@
 {% if antelope.version|string == '5.3' %}
 /opt/antelope/python2.7.2/lib/python2.7/site-packages/sitecustomize.py:
     file.managed:
-        - contents: {{ sitecustomize }}
+        - source: {{ sitecustomize }}
 {% endif %}
 
 {% if antelope.version|string == '5.2-64' %}
 /opt/antelope/python2.7.2-64/lib/python2.7/site-packages/sitecustomize.py:
     file.managed:
-        - contents: {{ sitecustomize }}
+        - source: {{ sitecustomize }}
 {% endif %}
 

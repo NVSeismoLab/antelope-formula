@@ -36,6 +36,8 @@ ant_pkg_{{ pkgname }}:
 
 # Service dependencies - for proper functioning
 # TODO: add -require: - pkg statements
+# TODO: related, restart lightdm, etc, otherwise need reboot
+#       for loading xfont paths. PITA.
 {% for srv in depends.services %}
 ant_srv_{{ srv }}:
     service:
@@ -43,4 +45,5 @@ ant_srv_{{ srv }}:
         - enable: True
         - name: {{ srv }}
 {% endfor %}
+
 
