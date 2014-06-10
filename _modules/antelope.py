@@ -22,7 +22,7 @@ LOG = logging.getLogger('salt.modules.antelope')
 INSTALL_ROOT = ['opt', 'antelope']
 INSTALLER_CMD_NAME='Install_antelope'
 INSTALLER_ARGS= ['-tuv']
-VERSION = '5.3'  # default version if none passed
+VERSION = '5.4'  # default version if none passed
 #----------------------------------------------------------------------------#
 
 def _base_dir(install=INSTALL_ROOT):
@@ -245,6 +245,8 @@ def update(version=VERSION):
     """
     Run antelope update if there are updates to be updated with update
     """
+    if not is_installed(version):
+        return False
     ENV = _env(version)
     opts = '-tQ'
     exe = os.path.join(ENV,'bin','antelope_update')
@@ -282,6 +284,27 @@ def patch(tarball, dest=None, version=None):
     if ret:
         return ret
     return True
+
+
+def check_license(opts=[], version=VERSION, **kwargs):
+    """
+    Run rtinit in a directory
+    
+    directory : str passed to 'cwd' of where to run from
+    opts : iterable of str of options for 'rtinit'
+    version : str of Antelope version to use (optional)
+
+    **kwargs : all additional keywords passed to 'cmd.run'
+               (i.e. 'runas', etc)
+    """
+    ENV = _env(version)
+    exe = os.path.join(ENV,'bin','check_license')
+    options = ' '.join(opts)
+    cmd = '{0} {1}'.format(exe, options)
+    out =  __salt__['cmd.run_all'](cmd, env={'ANTELOPE': ENV}, **kwargs)
+    if out['retcode']:
+        return out['stderr']
+    return out['stdout']
 
 
 def rtinit(directory, opts=[], version=VERSION, **kwargs):
