@@ -297,6 +297,8 @@ def check_license(opts=[], version=VERSION, **kwargs):
     **kwargs : all additional keywords passed to 'cmd.run'
                (i.e. 'runas', etc)
     """
+    if not is_installed(version):
+        return False
     ENV = _env(version)
     exe = os.path.join(ENV,'bin','check_license')
     options = ' '.join(opts)
