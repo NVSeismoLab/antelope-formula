@@ -1,37 +1,39 @@
 #
-# Example Salt pillar for antelope
+# EXAMPLE Salt pillar for antelope
 #
 
 #
-# default: Antelope param defaults
+# lookup: Antelope param defaults (per salt run)
 #   (this is used by salt states, change to override)
 #
-#   install : location of install (/opt/antelope)
-#   version : version number (5.3)
-#   license : salt location of lic file [template] (salt://antelope/files/license.pf)
+#   install : default location of install (/opt/antelope)
+#   version : default version number to use if none provided
+#   files : location of files OR file templates
 #   source : source directory for an install (/tmp/mnt/antelope)
 #
 # license_pf['keys']: dict of version numbers with lists of keys
 #   (this is used by the license template file)
 #   [in anteloe/files/license.pf]
 #
+# site_pf: dict of settings for 'site.pf' file template
+#
+# rtexec.pf: dict of numerous settings for an 'rtexec.pf' file template
+#
+
+# Used to override default variables at run time
 antelope:
     lookup:
         install: '/opt/antelope'
         files: 'salt://antelope/files'
         source: '/mnt'
-        version: '5.3'
+        version: '5.4'
 
-# Or can include from another pillar file/folder:
-# If license_pf is in antelope/pf/license.sls, then instead,
-#include:
-#   - antelope.pf.license
-#   - antelope.pf.site
-#
 
 # Used by the template file "antelope/files/license.pf"
 license_pf:
     keys:
+        '5.4':
+            -  'key=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX product=Antelope version=5.4 custid=XXXXXX lictype=subnet subnet=X.X.X.X a=XXXXXX count=0 expires=2100 Jun 01   # subnet'
         '5.3':
             - 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX 2100 Jan 01 # subnet X.X.X.X Antelope 5.3'
         '5.2-64':
@@ -48,4 +50,12 @@ site_pf:
     default_seed_network: 'XX'
     originating_organization: 'My Organization LLC'
     institution: 'Here'
+
+
+# Or can include from another pillar file/folder:
+# If license_pf is in antelope/pf/license.sls, then instead,
+#include:
+#   - antelope.pf.license
+#   - antelope.pf.site
+#
 

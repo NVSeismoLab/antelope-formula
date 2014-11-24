@@ -23,8 +23,14 @@
 {% endif %}
 
 #
-# Antelope ships with out-of-date non-patched 2.7.2, no sitecustomize file, so just add one.
+# Antelope ships with non-system 2.7, no sitecustomize file, so just add one.
 #
+{% if antelope.version|string == '5.4' %}
+/opt/antelope/python2.7.6/lib/python2.7/site-packages/sitecustomize.py:
+    file.managed:
+        - source: {{ sitecustomize }}
+{% endif %}
+
 {% if antelope.version|string == '5.3' %}
 /opt/antelope/python2.7.2/lib/python2.7/site-packages/sitecustomize.py:
     file.managed:

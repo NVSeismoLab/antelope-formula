@@ -9,7 +9,7 @@
 {% set antelope = salt['grains.filter_by']({
     'x86_64' : {
         'install' : '/opt/antelope',
-        'version' : '5.3',
+        'version' : '5.4',
         'files': 'salt://antelope/files',
         'source' : '/mnt',
     },
@@ -20,13 +20,16 @@
 #  - Future versions of salt will allow yum groupinstalls
 #  - add yum groups 'Base', 'Development Tools' and 'X Window System'
 #
+#
+# CHANGELOG: Remove 'xfs' (font server) pkg/srv in Ubuntu 14+
+#
 {% set depends = salt['grains.filter_by']({
     'Debian' : {
         'installer' : ['libjpeg62', 'libxft2'],
-        'programs' : ['xfs', 'xfstt', 't1-xfree86-nonfree',
+        'programs' : ['xfstt', 't1-xfree86-nonfree',
                      'ttf-xfree86-nonfree', 'ttf-xfree86-nonfree-syriac',
                      'xfonts-75dpi', 'xfonts-100dpi'],
-        'services': ['xfs', 'xfstt'],
+        'services': ['xfstt'],
         'groups' : [],
         },
     'RedHat' : {
