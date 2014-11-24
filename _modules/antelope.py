@@ -237,20 +237,13 @@ def is_updated(version=VERSION):
     """
     if not is_installed(version):
         return False
-    ENV = _env(version)
-    opts = '-tL'
-    exe = os.path.join(ENV,'bin','antelope_update')
-    cmd = '{0} {1}'.format(exe, opts)
-    # Returns new line separated list of patches
-    out = __salt__['cmd.run_all'](cmd, env={'ANTELOPE': ENV})
+    out = _run('antelope_update -tL', version)
     if out['retcode']:
         return out['stderr']
-    
     updates = out['stdout'].split('\n')
     for patch in updates:
         if patch.startswith('*'):
             return False
-    
     return True
 
 
@@ -260,11 +253,7 @@ def update(version=VERSION):
     """
     if not is_installed(version):
         return False
-    ENV = _env(version)
-    opts = '-tQ'
-    exe = os.path.join(ENV,'bin','antelope_update')
-    cmd = '{0} {1}'.format(exe, opts)
-    out =  __salt__['cmd.run_all'](cmd, env={'ANTELOPE': ENV})
+    out = _run('antelope_update -tQ')
     if out['retcode']:
         return out['stderr']
     return True
@@ -327,11 +316,7 @@ def rtinit(directory, opts=[], version=VERSION, **kwargs):
     **kwargs : all additional keywords passed to 'cmd.run'
                (i.e. 'runas', etc)
     """
-    ENV = _env(version)
-    exe = os.path.join(ENV,'bin','rtinit')
-    options = ' '.join(opts)
-    cmd = '{0} {1}'.format(exe, options)
-    out =  __salt__['cmd.run_all'](cmd, cwd=directory, env={'ANTELOPE': ENV}, **kwargs)
+    out = _run('rtinit', version, cwd=directory, **kwargs)
     if out['retcode']:
         return out['stderr']
     return True
@@ -348,11 +333,8 @@ def rtexec(directory, action=None, version=VERSION, **kwargs):
     **kwargs : all additional keywords passed to 'cmd.run'
                (i.e. 'runas', etc)
     """
-    OPTS = [] # the -s option breaks remote exec somehow...
-    ENV = _env(version)
-    exe = os.path.join(ENV,'bin','rtexec')
-    options = ' '.join(OPTS)
-    
+    # the -s option breaks remote exec somehow...
+    exe = 'rtexec'
     # Optionally, use keywords instead of options?
     # This may go away:
     if action == "restart":
@@ -361,7 +343,7 @@ def rtexec(directory, action=None, version=VERSION, **kwargs):
         options = '-fk  Auto-killed by salt'
 
     cmd = '{0} {1}'.format(exe, options)
-    out =  __salt__['cmd.run_all'](cmd, cwd=directory, env={'ANTELOPE': ENV}, **kwargs)
+    out = _run(cmd, version, cwd=directory, **kwargs)
     if out['retcode']:
         return out['stderr']
     return True
@@ -376,8 +358,11 @@ def run(command, version=VERSION, **kwargs):
     **kwargs : all additional keywords passed to 'cmd.run'
                (i.e. 'runas', etc)
     """
-    ENV = _env(version)
-    cmd = os.path.join(ENV, 'bin', command)
-    return __salt__['cmd.run_all'](cmd, env={'ANTELOPE': ENV}, **kwargs)
+    if not is_installed(version):
+        return False
+    out = _run(command, version, **kwargs)
+    if out['retcode']:
+        return out['stderr']
+    return out['stdout']
 
 
