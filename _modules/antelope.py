@@ -75,6 +75,20 @@ def _unmount_iso(mnt_point):
     return __salt__['mount.umount'](mnt_point)
     
 
+def _run(command, version=VERSION, **kwargs):
+    """
+    Run an antelope command
+    
+    version : str of Antelope version to use (optional)
+
+    **kwargs : all additional keywords passed to 'cmd.run'
+               (i.e. 'runas', etc)
+    """
+    ENV = _env(version)
+    cmd = os.path.join(ENV, 'bin', command)
+    return __salt__['cmd.run_all'](cmd, env={'ANTELOPE': ENV}, **kwargs)
+
+
 class _AntelopeInstaller(object):
     """
     Wrapper class for main to call installer functions and gracefully deal
@@ -287,10 +301,8 @@ def patch(tarball, dest=None, version=None):
 
 def check_license(opts=[], version=VERSION, **kwargs):
     """
-    Run rtinit in a directory
-    
-    directory : str passed to 'cwd' of where to run from
-    opts : iterable of str of options for 'rtinit'
+    Check license of an Antelope version
+
     version : str of Antelope version to use (optional)
 
     **kwargs : all additional keywords passed to 'cmd.run'
@@ -298,11 +310,7 @@ def check_license(opts=[], version=VERSION, **kwargs):
     """
     if not is_installed(version):
         return False
-    ENV = _env(version)
-    exe = os.path.join(ENV,'bin','check_license')
-    options = ' '.join(opts)
-    cmd = '{0} {1}'.format(exe, options)
-    out =  __salt__['cmd.run_all'](cmd, env={'ANTELOPE': ENV}, **kwargs)
+    out = _run('check_license', version)
     if out['retcode']:
         return out['stderr']
     return out['stdout']
