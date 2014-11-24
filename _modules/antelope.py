@@ -115,7 +115,7 @@ class _AntelopeInstaller(object):
         Construct away
         """
         self.log_to_stream()
-        self.version = version
+        self.version = str(version)
         if mount_point is not None:
             self.mount_point = mount_point
         # Possible to pass a directory structure too 
@@ -224,7 +224,6 @@ def is_updated(version=VERSION):
     if not is_installed(version):
         return False
     ENV = _env(version)
-    # Build command string
     opts = '-tL'
     exe = os.path.join(ENV,'bin','antelope_update')
     cmd = '{0} {1}'.format(exe, opts)
@@ -358,4 +357,19 @@ def rtexec(directory, action=None, version=VERSION, **kwargs):
     if out['retcode']:
         return out['stderr']
     return True
+
+
+def run(command, version=VERSION, **kwargs):
+    """
+    Run an antelope command
+    
+    version : str of Antelope version to use (optional)
+
+    **kwargs : all additional keywords passed to 'cmd.run'
+               (i.e. 'runas', etc)
+    """
+    ENV = _env(version)
+    cmd = os.path.join(ENV, 'bin', command)
+    return __salt__['cmd.run_all'](cmd, env={'ANTELOPE': ENV}, **kwargs)
+
 
