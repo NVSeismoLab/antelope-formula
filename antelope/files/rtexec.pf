@@ -11,7 +11,7 @@
 # are actually started.
 # 
 Processes &Tbl{
-{% for line in rtexec_pf.processes -%}
+{%- for line in Processes %}
 {{ line }}
 {%- endfor %}
 }
@@ -19,7 +19,7 @@ Processes &Tbl{
 # Only tasks which have a non-zero value in the following list are
 # actually run.
 Run     &Arr{
-{% for key, arg in rtexec_pf.run.iteritems() -%}
+{%- for key, arg in Run.iteritems() %}
 {{ key }} {{ arg }}
 {%- endfor %}
 }
@@ -27,7 +27,7 @@ Run     &Arr{
 # Automatically restart the following tasks if the 
 # corresponding parameter file(s) changes
 Pf_restart      &Tbl{
-{% for line in rtexec_pf.pf_restart -%}
+{%- for line in Pf_restart %}
 {{ line }}
 {%- endfor %}
 }
@@ -41,7 +41,7 @@ Pf_restart      &Tbl{
 # rtm will no longer have a useful menu item for running dbe on the database.
 
 Defines &Arr{  
-{% for key, arg in rtexec_pf.defines.iteritems() -%}
+{%- for key, arg in Defines.iteritems() %}
 {{ key }} {{ arg }}
 {%- endfor %}
 }
@@ -49,7 +49,7 @@ Defines &Arr{
 # The following parameters define the environment in which processes
 # will execute.  All other environment variables will be eliminated.
 Env     &Arr{
-{% for key, arg in rtexec_pf.env.iteritems() -%}
+{%- for key, arg in Env.iteritems() %}
 {{ key }} {{ arg }}
 {%- endfor %}
 }
@@ -61,11 +61,11 @@ Env     &Arr{
 # While starting processes, rtexec waits Start_period seconds between
 # running each process; this is useful when later processes are dependent
 # on earlier ones.
-Start_period  {{ rtexec_pf.start_period }} 
+Start_period  {{ Start_period }} 
 
 # When a process dies, rtexec restarts it automatically; however it 
 # also enforces a "cooling off" period of Minimum_period_between_starts.
-Minimum_period_between_starts  {{ rtexec_pf.minimum_period_between_starts }}
+Minimum_period_between_starts  {{ Minimum_period_between_starts }}
 
 # Under some circumstances (like misconfiguration or hardware problems), 
 # a process may die repeatedly.  The following parameters define 
@@ -74,13 +74,13 @@ Minimum_period_between_starts  {{ rtexec_pf.minimum_period_between_starts }}
 
 # When a process repeatedly dies in times less than the threshold, 
 # the period between restarts is repeatedly doubled.
-Failure_threshold  {{ rtexec_pf.failure_threshold }}
+Failure_threshold  {{ Failure_threshold }}
 
 # After so many failure repetitions, the period between restarts is 
 # set to the retry period.  mail is sent to anyone specified in
 # the startup_shutdown_email parameter.
-Failure_repetitions  {{ rtexec_pf.failure_repetitions }}
-Failure_retry_period  {{ rtexec_pf.failure_retry_period }}
+Failure_repetitions  {{ Failure_repetitions }}
+Failure_retry_period  {{ Failure_retry_period }}
 
 # During shutdown, send kill signals to processes in the order named
 # in Shutdown_order list.  Each line can contain multiple processes, which 
@@ -94,7 +94,7 @@ Failure_retry_period  {{ rtexec_pf.failure_retry_period }}
 #
 # orbserver is usually the last process to be killed.
 Shutdown_order &Tbl{
-{% for line in rtexec_pf.shutdown_order -%}
+{%- for line in Shutdown_order %}
 {{ line }}
 {%- endfor %}
 }
@@ -107,22 +107,22 @@ Shutdown_order &Tbl{
 # when they die; the corresponding value is the number of
 # seconds rtexec waits before shutting down.
 Shutdown_when_task_dies	&Arr{
-{% for key, arg in rtexec_pf.shutdown_when_task_dies.iteritems() -%}
+{%- for key, arg in Shutdown_when_task_dies.iteritems() %}
 {{ key }} {{ arg }}
 {%- endfor %}
 }
 
 # set this parameter to a list of email addresses which will receive
 # email automatically when the system is started or stopped.
-startup_shutdown_email  {{ rtexec_pf.startup_shutdown_email }}
+startup_shutdown_email  {{ startup_shutdown_email }}
 
 # resource problems
-status_email {{ rtexec_pf.status_email }}
+status_email {{ status_email }}
 
 Startup_tasks   &Tbl{
 # These are one-shot processes to be run when rtexec first starts.
 # The format is the same as in the process table: a task name, followed by the execution line
-{% for line in rtexec_pf.startup_tasks -%}
+{%- for line in Startup_tasks %}
 {{ line }}
 {%- endfor %}
 }
@@ -130,12 +130,12 @@ Startup_tasks   &Tbl{
 Shutdown_tasks  &Tbl{
 # These are one-shot processes to be run when rtexec is shutting down.
 # The format is the same as in the process table: a task name, followed by the execution line
-{% for line in rtexec_pf.shutdown_tasks -%}
+{%- for line in Shutdown_tasks %}
 {{ line }}
 {%- endfor %}
 }
 
-max_cron_gap  {{ rtexec_pf.max_cron_gap }}
+max_cron_gap  {{ max_cron_gap }}
                         # maximum time gap which the rtexec cron will fill
                         # i.e., cron jobs which would have run during the 
                         # max_cron_gap seconds while rtexec was down for 
@@ -166,44 +166,44 @@ crontab &Arr{
 ## cleanlogs   LOCAL   5   1  *    *       *      truncate_log -r logs/*
 
 # send mail if patches are available from BRTT
-{% for key, arg in rtexec_pf.crontab.iteritems() -%}
+{%- for key, arg in crontab.iteritems() %}
     {{ key }} {{ arg }}
 {%- endfor %}
 }
 
 # rtexec gives processes this much time to quit on their
 # own after a signal ; then it sends a kill -9 
-Time_to_die  {{ rtexec_pf.time_to_die }}
+Time_to_die  {{ Time_to_die }}
 
 # The following are the process resource limits 
 Limit   &Arr{
-{% for key, arg in rtexec_pf.limit.iteritems() -%}
+{%- for key, arg in Limit.iteritems() %}
 {{ key }} {{ arg }}
 {%- endfor %}
 }
 
-umask  {{ rtexec_pf.umask }}
+umask  {{ umask }}
 
 # rtexec keeps some statistics in this database
-Database {{ rtexec_pf.database }}
+Database {{ Database }}
 
 # When a program dies due to a segmentation violation
 # or bus error, an incident report is generated.  
 # email_incident_reports may be set to a list of recipients 
 # who will get these reports by email.  BRTT likes to receive
 # reports if a standard Antelope program dies this way.
-email_incident_reports  {{ rtexec_pf.email_incident_reports }}
+email_incident_reports  {{ email_incident_reports }}
 
 # if include_corefile is "yes", any corefile generated will be 
 # sent via email also.
-include_corefile  {{ rtexec_pf.include_corefile }}
+include_corefile  {{ include_corefile }}
 
-Chatter_limit {{ rtexec_pf.chatter_limit }}  # minimum gap between messages
-Maximum_memory_in_use {{ rtexec_pf.maximum_memory_in_use }}  # warn when maximum memory in use exceeds this proportion of physical memory
+Chatter_limit {{ Chatter_limit }}  # minimum gap between messages
+Maximum_memory_in_use {{ Maximum_memory_in_use }}  # warn when maximum memory in use exceeds this proportion of physical memory
 
 disks   &Tbl{
 # name    file  minfree_Mbytes min_kinodes description
-{% for line in rtexec_pf.disks -%}
+{%- for line in disks %}
 {{ line }}
 {%- endfor %}
 }
@@ -215,14 +215,14 @@ disks   &Tbl{
 ####################################################################
 
 Buttons &Tbl{  # Use {} instead of '' to conform to tcl's quoting
-{% for line in rtexec_pf.buttons -%}
+{%- for line in Buttons %}
 {{ line }}
 {%- endfor %}
 }
 
 # Other files to add to edit menu
 Edit_files &Tbl{
-{% for line in rtexec_pf.edit_files -%}
+{%- for line in Edit_files %}
 {{ line }}
 {%- endfor %}
 }
@@ -231,7 +231,7 @@ Parameter_files &Arr{   # if the parameter file doesn't follow the convention
                         # of being named after either the task name or 
                         # the program name, it should be specified here, so
                         # that rtm can allow editing it.
-{% for key, arg in rtexec_pf.parameter_files.iteritems() -%}
+{%- for key, arg in Parameter_files.iteritems() %}
 {{ key }} {{ arg }}
 {%- endfor %}
 }
@@ -240,13 +240,13 @@ Parameter_files &Arr{   # if the parameter file doesn't follow the convention
 # which therefore should have an input and output bar on the 
 # Processing Tasks panel of rtm.
 orbtasks &Arr{
-{% for key, arg in rtexec_pf.orbtasks.iteritems() -%}
-{{ key }} {{ arg }}
+{%- for line in orbtasks %}
+{{ line }}
 {%- endfor %}
 }
 
-title  {{ rtexec_pf.title }} # alternate location to specify rtm title
-network_code {{ rtexec_pf.network_code }}  # network code for rtreport and rtsys
+title  {{ title }} # alternate location to specify rtm title
+network_code {{ network_code }}  # network code for rtreport and rtsys
 
 
-pf_revision_time 1335283766
+pf_revision_time {{ pf_revision_time }}

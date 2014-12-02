@@ -1,0 +1,21 @@
+#
+# orb2orb.pf
+#
+too_new		{{ too_new }}
+too_old		{{ too_old }}
+discards	{{ discards }}
+
+check_unstuff	{{ check_unstuff }}	# check for unstuffPkt errors and discard? (0 or 1)
+
+# transmit parameters
+test_freq	{{ test_freq }}
+wait_seconds {{ wait_seconds }}
+lag_trigger {{ lag_trigger }}
+lag_reset  {{ lag_reset }}
+
+# wait for orb readers on output orb which match these regular expressions
+# if both regular expressions are empty, no waiting occurs
+wait_match 	{{ wait_match }}
+wait_reject {{ wait_reject }}
+
+pf_revision_time {{ pf_revision_time }}
