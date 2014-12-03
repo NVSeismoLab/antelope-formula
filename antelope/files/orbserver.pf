@@ -1,0 +1,61 @@
+#
+# orbserver.pf
+#
+
+# accept connections only from these ip addresses:
+valid_ip_addresses      &Tbl{
+{%- for line in valid_ip_addresses %}
+{{ line }}
+{%- endfor %}
+}
+
+# reject connections from these ip addresses:
+reject_ip_addresses &Tbl{ 
+{%- for line in reject_ip_addresses %}
+{{ line }}
+{%- endfor %}
+}
+
+minimum_packet_size  {{ minimum_packet_size }}    # used to size the packet index
+maximum_packet_size  {{ maximum_packet_size }}   # 
+ringsize             {{ ringsize }} # total size of the file which holds the packets
+                               #      (suffix can be G, M or k)
+initial_stash_size   {{ initial_stash_size }}     # initial size of stash file
+
+prefix               {{ prefix }}   # where orbserver private files are kept
+
+maximum_srcid        {{ maximum_srcid }}   # used to size the source index file, 
+                               #   fixed in size after creation.
+
+concurrency          {{ concurrency }}      # probably not necessary
+
+time_index_spacing   {{ time_index_spacing }}      # an index of pktid versus time is kept 
+                                                   #   with this many seconds between entries
+minimum_time_index_range  {{ minimum_time_index_range }}   # minimum range (in seconds) 
+                                    #   in the pktid by time index.
+maximum_time_index_range  {{ maximum_time_index_range }}    # maximum range (in seconds) 
+                                    #   in the pktid by time index.
+
+statistics_interval  {{ statistics_interval }}           # if specified, bytes and packets
+                                                         # read and written are printed 
+                                                         # at intervals specified here
+statistics_file {{ statistics_file }} # file in which to write transfer and connections info
+
+log_packets	&Arr{ # log all reaped packets sent to these ip addresses
+{%- for line in log_packets %}
+{{ line }}
+{%- endfor %}
+}
+
+reject_message	&Literal{
+{{ reject_message }}
+}
+
+# following are descriptions of special dynamic controls available in orbserver
+dynamic_controls &Arr{
+{%- for key, arg in dynamic_controls.iteritems() %}
+{{ key }} {{ arg }}
+{%- endfor %}
+}
+
+pf_revision_time {{ pf_revision_time }}
