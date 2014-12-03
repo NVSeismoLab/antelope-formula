@@ -1,24 +1,37 @@
 antelope-formula
 ================
 
-Salt modules and states for BRTT Antelope software
+Salt templates, modules, and states for BRTT Antelope software
+
+Files
+-----
+The following pf files are jinja templated for use by states. they can be sourced from `salt://antelope/files`
+
+* license.pf
+* site.pf
+* rtexec.pf
+* orbserver.pf
+* orb2orb.pf
+
+NOTE: `license.pf` and `site.pf` are populated directly from a salt pillar, and may be installed directly using the included statefiles, due to their custom nature and their tendency to be consistent per installation. Other pf file templates may exist in multiple versions and formats and are designed to be used by custom salt states.
+
 
 Modules
 -------
 ### antelope
 
 Execution  module with the following commands
- * install - install Antelope from ISO or directory structure
- * update - run Antelope update command
- * run - run any Antelope command
- * is_updated - return whether uninstalled patches are available
- * is_installed - return whether a given version is installed
- * rtinit - run rtinit in a specified directory
- * rtexec (beta) - Start/stop control for rtexec (still flakey)
+ * `install` - install Antelope from ISO or directory structure
+ * `update` - run Antelope update command
+ * `run` - run any Antelope command
+ * `is_updated` - return whether uninstalled patches are available
+ * `is_installed` - return whether a given version is installed
+ * `rtinit` - run rtinit in a specified directory
+ * `rtexec` (beta) - Start/stop control for rtexec (still flakey)
 
 
-States
-------
+Statefiles
+----------
 ### antelope
 State which satifies dependencies and installs the sofware using the command module. In future, could use a custom state.
 
