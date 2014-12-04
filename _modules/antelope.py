@@ -305,7 +305,7 @@ def check_license(opts=[], version=VERSION, **kwargs):
     return out['stdout']
 
 
-def rtinit(directory, opts=[], version=VERSION, **kwargs):
+def rtinit(directory, version=VERSION, rtuser='root', **kwargs):
     """
     Run rtinit in a directory
     
@@ -316,7 +316,7 @@ def rtinit(directory, opts=[], version=VERSION, **kwargs):
     **kwargs : all additional keywords passed to 'cmd.run'
                (i.e. 'runas', etc)
     """
-    out = _run('rtinit', version, cwd=directory, **kwargs)
+    out = _run('rtinit', version, cwd=directory, runas=rtuser, **kwargs)
     if out['retcode']:
         return out['stderr']
     return True
