@@ -18,13 +18,19 @@ include:
 
 ##############################################################################
 # 2) run an install command
-# - Right now, call the execution function directly
-# - ideally, this should be a state module which calls an execution module
+# - If source is a package URL, call pkg
+# - Else assume source is ISO or directory of ISO mount, call module install
+# - Right now, assumes ISO exists locally (copied or NFS access, e.g.)
+#   (Could enforce this with file.managed in revision)
 #
-
-run_installer:
-    module.run:
-        - name: antelope.install
-        - source: {{ antelope.source }}
-        - version: {{ antelope.version }}
-
+antelope_install:
+{% if antelope.source.endswith('.deb') or antelope.source.endswith('.rpm') %}
+  pkg.installed:
+    - sources:
+      - antelope: {{ antelope.source }}
+{% else %}
+  module.run:
+    - name: antelope.install
+    - source: {{ antelope.source }}
+    - version: {{ antelope.version }}
+{% endif %}
