@@ -26,7 +26,7 @@
 {% set depends = salt['grains.filter_by']({
     'Debian' : {
         'installer' : ['libjpeg62', 'libxft2'],
-        'programs' : ['xfstt', 't1-xfree86-nonfree',
+        'programs' : ['xterm', 'xfstt', 't1-xfree86-nonfree',
                      'ttf-xfree86-nonfree', 'ttf-xfree86-nonfree-syriac',
                      'xfonts-75dpi', 'xfonts-100dpi'],
         'services': ['xfstt'],
