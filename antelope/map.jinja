@@ -16,13 +16,20 @@
 }, grain='cpuarch', merge=salt['pillar.get']('antelope:lookup')) %}
 
 # Dependencies
-# TODO: expand this
-#  - Future versions of salt will allow yum groupinstalls
-#  - add yum groups 'Base', 'Development Tools' and 'X Window System'
-#
-#
+# NOTE: Fonts only necessary for the X11 on local machine...
 # CHANGELOG: Remove 'xfs' (font server) pkg/srv in Ubuntu 14+
 #
+# EL 7 font pkgs: 
+# xorg-x11-fonts-ISO8859-1-75dpi.noarch 
+# xorg-x11-fonts-misc.noarch
+# 
+# -- Most of these are unecessary, except xterm, req'd for dbloc2 to luanch dbpick
+# according to man page: xterm (gnuplot telnet)??
+# xorg-x11-utils xorg-x11-server-common libXi
+# optionally: ImageMagick gdb
+#
+# REMOVE: hal
+# 
 {% set depends = salt['grains.filter_by']({
     'Debian' : {
         'installer' : ['libjpeg62', 'libxft2'],
